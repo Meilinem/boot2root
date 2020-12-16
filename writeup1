@@ -1,0 +1,75 @@
+# writeup1
+
+## step1
+
+Scan ports with :
+```bash
+sudo nmap -sN localhost/24
+```
+Thats gives us the ip of the vm :
+```bash
+Starting Nmap 7.91 ( https://nmap.org ) at 2020-12-16 22:07 CET
+Nmap scan report for SnowCrash (192.168.1.5)
+Host is up (0.0017s latency).
+Not shown: 998 closed ports
+PORT     STATE         SERVICE
+80/tcp   open|filtered http
+4242/tcp open|filtered vrml-multi-use
+MAC Address: 08:00:27:84:39:50 (Oracle VirtualBox virtual NIC)
+
+Nmap scan report for BornToSecHackMe (192.168.1.21)
+Host is up (0.0083s latency).
+Not shown: 994 closed ports
+PORT    STATE         SERVICE
+21/tcp  open|filtered ftp
+22/tcp  open|filtered ssh
+80/tcp  open|filtered http
+143/tcp open|filtered imap
+443/tcp open|filtered https
+993/tcp open|filtered imaps
+MAC Address: 08:00:27:C8:08:7C (Oracle VirtualBox virtual NIC)
+
+Nmap scan report for bbox.lan (192.168.1.254)
+Host is up (0.0053s latency).
+All 1000 scanned ports on bbox.lan (192.168.1.254) are open|filtered
+MAC Address: D0:6E:DE:D3:F5:0C (Sagemcom Broadband SAS)
+
+Nmap scan report for Meilines-MBP (192.168.1.16)
+Host is up (0.000028s latency).
+All 1000 scanned ports on Meilines-MBP (192.168.1.16) are open|filtered (504) or closed (496)
+
+Nmap done: 256 IP addresses (4 hosts up) scanned in 9.94 seconds
+```
+
+## step2
+We then checked the https://192.168.1.21
+
+We used dirb to test all urls and we found out some interring ones :
+```bash
+https://192.168.1.21/forum
+https://192.168.1.21/phpmyadmin
+https://192.168.1.21/webmail
+```
+
+## step3
+We checked the logs in "Probleme login ?" section in the https://192.168.1.21/forum
+Saw user lmezard login with password :
+```bash
+!q\]Ej?*5K5cy*AJ
+```
+And we logged in on the forum with these logs
+
+## step4
+We got the user mail on the profile and logged in on https://192.168.1.21/webmail with that email and the same password.
+In the mailbox there is a mail with a root user and a password :
+```bash
+Fg-'kKXBj87E:aJ$
+```
+
+## step5
+Then we logged on https://192.168.1.21/phpmyadmin with root as user and the password as above.
+And we accessed to the data base : in which we clicked on "forum_db" and "mlf2_userdata" to change user_type for user "lmezard" to "2" as it is set for admin user.
+
+## step4
+Relog on the forum and you got now the admin rights.
+
