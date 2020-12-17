@@ -5,6 +5,12 @@ passwd=""
 tmp=""
 search=""
 
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+	printf "bash launch_me.sh"
+	echo " [-v verbose]"
+	exit
+fi
+
 while (( i < 13 )); do
 	if (( i >= 8 )); then
 		letter=$(echo $(grep -H -a2 "char getme$i" ft_fun/* | awk -F "return \'" '{print $2}') | awk -F "\';" '{print $1}')
