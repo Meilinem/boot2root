@@ -1,5 +1,3 @@
-
-
 void	sig_handler(int sig)
 {
 	printf("So you think you can stop the bomb with ctr-c, do you?\n");
