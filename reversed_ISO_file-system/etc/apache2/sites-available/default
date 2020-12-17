@@ -1,0 +1,137 @@
+<VirtualHost *:80>
+	ServerAdmin webmaster@localhost
+	ServerName BorntoSec
+	DocumentRoot /var/www
+#	<Directory />
+#		Options FollowSymLinks
+#		AllowOverride None
+#	</Directory>
+
+	<Directory /var/www/forum>
+		SSLRequireSSL
+	</Directory>
+	<Directory /var/www/>
+#		Options Indexes FollowSymLinks MultiViews
+#		AllowOverride None
+#		Order allow,deny
+		allow from all
+	</Directory>
+
+	ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+	<Directory "/usr/lib/cgi-bin">
+		AllowOverride None
+		Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+		Order allow,deny
+		Allow from all
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+
+# Possible values include: debug, info, notice, warn, error, crit,
+# alert, emerg.
+	LogLevel warn
+
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+	Alias /doc/ "/usr/share/doc/"
+	<Directory "/usr/share/doc/">
+		Options Indexes MultiViews FollowSymLinks
+		AllowOverride None
+		Order deny,allow
+		Deny from all
+		Allow from 127.0.0.0/255.0.0.0 ::1/128
+	</Directory>
+
+</VirtualHost>
+
+<VirtualHost *:443>
+	ServerAdmin webmaster@localhost
+
+	SSLEngine On
+	SSLCertificateFile /etc/ssl/private/localhost.pem
+
+# phpMyAdmin default Apache configuration
+
+Alias /phpmyadmin /usr/share/phpmyadmin
+
+<Directory /usr/share/phpmyadmin>
+	Options FollowSymLinks
+	DirectoryIndex index.php
+	AllowOverride All
+
+	<IfModule mod_php5.c>
+		AddType application/x-httpd-php .php
+
+		php_flag magic_quotes_gpc Off
+		php_flag track_vars On
+		php_flag register_globals Off
+		php_admin_flag allow_url_fopen Off
+		php_value include_path .
+		php_admin_value upload_tmp_dir /var/lib/phpmyadmin/tmp
+		php_admin_value open_basedir /usr/share/phpmyadmin/:/etc/phpmyadmin/:/var/lib/phpmyadmin/
+	</IfModule>
+
+</Directory>
+
+# Authorize for setup
+<Directory /usr/share/phpmyadmin/setup>
+    <IfModule mod_authn_file.c>
+    AuthType Basic
+    AuthName "phpMyAdmin Setup"
+    AuthUserFile /etc/phpmyadmin/htpasswd.setup
+    </IfModule>
+    Require valid-user
+</Directory>
+
+# Disallow web access to directories that don't need it
+<Directory /usr/share/phpmyadmin/libraries>
+    Order Deny,Allow
+    Deny from All
+</Directory>
+<Directory /usr/share/phpmyadmin/setup/lib>
+    Order Deny,Allow
+    Deny from All
+</Directory>
+
+	Alias /forum /var/www/forum
+<Directory /var/www/forum>
+	Options Indexes FollowSymLinks MultiViews
+	<IfModule mod_php5.c>
+		php_flag register_globals off
+	</IfModule>
+	<IfModule mod_dir.c>
+		DirectoryIndex index.php
+	</IfModule>
+
+</Directory>
+
+Alias /webmail /usr/share/squirrelmail
+
+<Directory /usr/share/squirrelmail>
+	Options FollowSymLinks
+		<IfModule mod_php5.c>
+			php_flag register_globals off
+		</IfModule>
+		<IfModule mod_dir.c>
+			DirectoryIndex index.php
+		</IfModule>
+
+		<Files configtest.php>
+			order deny,allow
+			deny from all
+			allow from 127.0.0.1
+		</Files>
+	</Directory>
+
+	ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+	<Directory "/usr/lib/cgi-bin">
+		AllowOverride None
+		Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+		Order allow,deny
+		Allow from all
+	</Directory>
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	LogLevel warn
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
