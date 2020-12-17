@@ -39,4 +39,28 @@ if (n1 == 0xd6)   =>					0x08048c02 <+106>:	cmp    DWORD PTR [ebp-0x4],0xd6
 
 So with 1 b 214 we pass it.
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!! PHASE 4 :
+
+9
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PHASE 5 :
+
+It encrypt a string of 6 character length and compare it to "giants"
+
+The encryption do as follow :
+
+A = 0x41
+0x41 & 0xf = 1
+esi = "isrveawhobpnutfg";
+str[index] = esi[1];
+
+after the encryption the alphabet representation is as follow :
+abcdefghijklmnopqrstuvwxyz
+-----
+srveawhobpnutfgisrveawhobp
+
+giants = opekmq
+giants = opekma
+
+
 
