@@ -1,8 +1,8 @@
 
-Phase 1 :
+!!!!!!!!!!!!!!!!!! PHASE ! :
 Public speaking is very easy.
 
-Phase 2 :
+!!!!!!!!!!!!!!!!!! PHASE 2 :
 
 0x08048b63 <+27>:	cmp    DWORD PTR [ebp-0x18],0x1
 
@@ -25,3 +25,18 @@ do
 while (loop <= 5);
 
 our 5 numbers : 1 2 6 24 120 720
+
+
+!!!!!!!!!!!!!!!!! PHASE 3 :
+
+                   n1 c1 n2
+It ask for this : "%d %c %d"
+
+And check for this
+if (n1 <= 7)      =>                    0x08048bc9 <+49>:	cmp    DWORD PTR [ebp-0xc],0x7
+if (c1 == 0x62)   =>					0x08048c00 <+104>:	mov    bl,0x62
+if (n1 == 0xd6)   =>					0x08048c02 <+106>:	cmp    DWORD PTR [ebp-0x4],0xd6
+
+So with 1 b 214 we pass it.
+
+
