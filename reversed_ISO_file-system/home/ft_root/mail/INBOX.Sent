@@ -1,0 +1,70 @@
+From ft_root@localhost  Thu Oct 08 23:15:06 2015
+Received: from 192.168.1.22
+        (SquirrelMail authenticated user ft_root)
+        by 192.168.1.8 with HTTP;
+        Thu, 8 Oct 2015 23:15:06 +0200
+Message-ID: <40c4c3726eb1f7cd51257414bfb85e86.squirrel@192.168.1.8>
+Date: Thu, 8 Oct 2015 23:15:06 +0200
+Subject: sdd
+From: ft_root@mail.borntosec.net
+To: ft_root@borntosec.net
+User-Agent: SquirrelMail/1.4.22
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+X-Priority: 3 (Normal)
+Importance: Normal
+X-IMAPbase: 1444338880 0000000003
+X-UID: 1
+Status: R
+X-Keywords:                                                                         
+Content-Length: 1
+
+
+
+From ft_root@localhost  Thu Oct 08 23:15:34 2015
+Received: from 192.168.1.22
+        (SquirrelMail authenticated user ft_root)
+        by 192.168.1.8 with HTTP;
+        Thu, 8 Oct 2015 23:15:34 +0200
+Message-ID: <7797a5ca5a062bd711ec4c31dcf28f47.squirrel@192.168.1.8>
+Date: Thu, 8 Oct 2015 23:15:34 +0200
+Subject: sdfsdf
+From: ft_root@mail.borntosec.net
+To: ft_root@mail.borntosec.net
+User-Agent: SquirrelMail/1.4.22
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+X-Priority: 3 (Normal)
+Importance: Normal
+X-UID: 2
+Status: R
+X-Keywords:                                                                         
+Content-Length: 1
+
+
+
+From ft_root@localhost  Thu Oct 08 23:29:28 2015
+Received: from 192.168.1.22
+        (SquirrelMail authenticated user ft_root)
+        by 192.168.1.8 with HTTP;
+        Thu, 8 Oct 2015 23:29:28 +0200
+Message-ID: <a94519824ce1ca9bcecf5818d8783b52.squirrel@192.168.1.8>
+Date: Thu, 8 Oct 2015 23:29:28 +0200
+Subject: test
+From: ft_root@mail.borntosec.net
+To: ft_root@mail.borntosec.net
+User-Agent: SquirrelMail/1.4.22
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+X-Priority: 3 (Normal)
+Importance: Normal
+X-UID: 3
+Status: R
+X-Keywords:                                                                         
+Content-Length: 1
+
+
+
