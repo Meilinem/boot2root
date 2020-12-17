@@ -10,10 +10,18 @@ First number need to be 1.
 
 After this there is a loop for the 5 remaining number.
 
-First cmp => n == $eax(2)
-second => n == $eax(6)
-three => n == $eax (24)
-four => n == $eax (120)
-five => n == $eax (720)
+Le  calcul est le suivant :
 
-1 2 6 24 120 720
+int	loop = 1;
+int n = 1 (premier nombre)
+do
+{
+	var1 = loop + 1;
+	var2 = var2 * (n + loop * 4 - 4);
+	if (n + loop * 4 != var 2)
+		explode_bomb ();
+	loop++;
+}
+while (loop <= 5);
+
+our 5 numbers : 1 2 6 24 120 720
