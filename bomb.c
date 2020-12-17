@@ -279,23 +279,49 @@ label_3:
     return eax;
 }
 
-
-void	read_line()
-{
-	if (skip() == 0)
-	{
-		if (infile != stdin)
-		{
-			if (getenv("GRADE_BOMB") == 0)
-				exit(0);
-			infile = stdin;
-			if (skip() != 0)
-				;
-			printf("Error: Premaatture EOF on stdin\n");
-				explode_bomb();
-		}
-	}
-	// ?????
+uint32_t read_line (void) {
+    int32_t var_18h;
+    eax = skip (edi);
+    if (eax == 0) {
+        eax = infile;
+        if (eax != *(obj.stdin)) {
+            eax = getenv ("GRADE_BOMB");
+            if (eax != 0) {
+                exit (0);
+            }
+            eax = stdin;
+            *(obj.infile) = eax;
+            eax = skip ();
+            if (eax != 0) {
+                goto label_0;
+            }
+        }
+        printf ("Error: Premature EOF on stdin\n");
+        explode_bomb ();
+    }
+label_0:
+    eax = num_input_strings;
+    eax *= 5;
+    eax <<= 4;
+    edi = eax + obj_input_strings;
+    al = 0;
+    ecx = 0xffffffff;
+    __asm ("repne scasb al, byte es:[edi]");
+    eax = ecx;
+    eax = ~eax;
+    edi = eax - 1;
+    if (edi == 0x4f) {
+        printf ("Error: Input line too long\n");
+        explode_bomb ();
+    }
+    eax = num_input_strings;
+    eax *= 5;
+    eax <<= 4;
+    *((edi + eax + 0x804b67f)) = 0;
+    eax += obj.input_strings;
+    *(obj.num_input_strings)++;
+    edi = *((ebp - 0x18));
+    return eax;
 }
 
 
