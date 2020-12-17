@@ -141,6 +141,28 @@ label_0:
     return eax;
 }
 
+uint32_t func4 (int32_t arg_8h) {
+    int32_t var_18h;
+    do {
+label_0:
+        ebx = *((ebp + 8));
+        if (ebx <= 1) {
+            goto label_1;
+        }
+        eax = func4 (ebx - 1);
+    } while (1);
+    esi = eax;
+    eax = func4 (ebx - 2);
+    goto label_0;
+    eax += esi;
+    goto label_2;
+label_1:
+    eax = 1;
+label_2:
+    esp = ebp - 0x18;
+    return eax;
+}
+
 uint32_t phase_4 (char * s) {
     int32_t var_4h;
     edx = *((ebp + 8));
