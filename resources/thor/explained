@@ -11,9 +11,9 @@ First number need to be 1.
 After this there is a loop for the 5 remaining number.
 
 First cmp => n == $eax(2)
-second cmp => n == $eax(6)
+second => n == $eax(6)
 three => n == $eax (24)
 four => n == $eax (120)
 five => n == $eax (720)
 
-1 2 6 24 120
+1 2 6 24 120 720
