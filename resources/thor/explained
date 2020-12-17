@@ -1,0 +1,19 @@
+
+Phase 1 :
+Public speaking is very easy.
+
+Phase 2 :
+
+0x08048b63 <+27>:	cmp    DWORD PTR [ebp-0x18],0x1
+
+First number need to be 1.
+
+After this there is a loop for the 5 remaining number.
+
+First cmp => n == $eax(2)
+second cmp => n == $eax(6)
+three => n == $eax (24)
+four => n == $eax (120)
+five => n == $eax (720)
+
+1 2 6 24 120
