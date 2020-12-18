@@ -4,7 +4,7 @@
 
 Scan ports with :
 ```bash
-sudo nmap -sN localhost/24
+sudo nmap -sn localhost/24
 ```
 Thats gives us the ip of the vm :
 ```bash
