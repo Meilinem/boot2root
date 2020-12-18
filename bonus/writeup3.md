@@ -1,4 +1,4 @@
-#### Grub2
+# Boot exploit
 
 During boot, we can press `shift` for bios, it will bring up the boot menu in
 single-user mode which allow us to choose a boot and pass init=/bin/bash as
@@ -11,9 +11,8 @@ Step 1 :
 Step 2 :
 - live init=/bin/bash
 
-
-# Done
-
+root@BornToSecHackMe:/# id
+uid=0(root) gid=0(root) groups=0(root)
 
 
 docs :
