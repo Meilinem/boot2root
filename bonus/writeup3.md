@@ -1,6 +1,6 @@
 # Boot exploit
 
-During boot, we can press `shift` for bios, it will bring up the boot menu in
+During boot, we can press `shift` to access the bios, it will bring up the boot menu in
 single-user mode which allow us to choose a boot and pass init=/bin/bash as
 kernel parameters
 
