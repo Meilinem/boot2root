@@ -11,7 +11,7 @@ Step 1 :
 Step 2 :
 - live init=/bin/bash
 
-root@BornToSecHackMe:/# id
+root@BornToSecHackMe:/# id    
 uid=0(root) gid=0(root) groups=0(root)
 
 
