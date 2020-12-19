@@ -3,10 +3,16 @@ from turtle import *
 f = open("turtle", "r")
 text = f.read()
 lines = text.count("\n")
-i = 0
+i = 1
 number = ""
-x = 1
-y = 1
+x = 0
+y = 0
+setpos(x, y)
+shape("turtle")
+fillcolor("green")
+n_color = ["red", "blue", "green", "brown", "blue"]
+n_c = 0
+pencolor(n_color[n_c])
 
 with open("turtle") as fp:
    line = fp.readline()
@@ -14,44 +20,47 @@ with open("turtle") as fp:
    while line:
        if len(line) < 3:
            penup()
-           goto(x, y)
+           setpos(x, y)
            pendown()
-           x += 1
-           y += 1
+           n_c+=1
+           if n_c < 5:
+               pencolor(n_color[n_c])
+           x+=100
+           y+=50
 
        if "gauche" in line:
-           print("left : ")
+           #print("left : ")
            for n in line:
                if n.isdigit():
                    number += n
-           print(number)
+           #print(number)
            left(int(number))
            number=""
 
        if "droite" in line:
-           print("right : ")
+           #print("right : ")
            for n in line:
                if n.isdigit():
                    number += n
-           print(number)
+           #print(number)
            right(int(number))
            number=""
 
        if "Avance" in line:
-           print("forward : ")
+           #print("forward : ")
            for n in line:
                if n.isdigit():
                    number += n
-           print(number)
+           #print(number)
            forward(int(number))
            number=""
 
        if "Recule" in line:
-           print("backward : ")
+           #print("backward : ")
            for n in line:
                if n.isdigit():
                    number += n
-           print(number)
+           #print(number)
            backward(int(number))
            number=""
 
