@@ -234,26 +234,26 @@ We know laurie is an allowed user on the sshd_config file, so we connect ourself
 
 There we see a binary named **bomb**, and a README with some hints. The bomb has **6 stages**, and **each stage needs a password to get to the next stage**. At the end, **all the passwords combined without spaces** will **form the password** for the user **thor**.
 
-### Phase 1
+## Phase 1
+
+We see in the phase 1 function that it compares the input with a string.
 
 ```bash
 $> strings bomb
 ```
-See "Public speaking is very easy."
+We see the string: **"Public speaking is very easy."**
 
-### Phase 2
+## Phase 2
 
-```bash
+```gdb
 0x08048b63 <+27>:	cmp    DWORD PTR [ebp-0x18],0x1
 ```
 
-First number need to be 1.
+We see the function is expecting 6 numbers.  
+The first number needs to be 1, after this there is a loop for the 5 remaining number.  
+The math is as following:
 
-After this there is a loop for the 5 remaining number.
-
-The math is as following :
-
-```bash
+```c
 int	loop = 1;
 int n = 1 (premier nombre)
 do
@@ -268,29 +268,29 @@ while (loop <= 5);
 ```
 
 We can notice that there is a loop reaching consecutively 1, 2, 3, 4, 5, 6.
-And our password is equal to : 1!, 2!, 3!, 4!, 5!.
+And our password is equal to : 1!, 2!, 3!, 4!, 5!, it's a **factorial** function.
 
-Our 5 numbers : 1 2 6 24 120 720
+Our 6 numbers are: **1 2 6 24 120 720**
 
-### Phase 3
+## Phase 3
 
 We know from the hint that the second element is "b".
 
                    n1 c1 n2
-It ask for this : "%d %c %d"
+It asks for this : "%d %c %d" and checks for this:
 
-```bash
-And check for this
-if (n1 <= 7)      =>                    0x08048bc9 <+49>:	cmp    DWORD PTR [ebp-0xc],0x7
-if (c1 == 0x62)   =>					0x08048c00 <+104>:	mov    bl,0x62
-if (n1 == 0xd6)   =>					0x08048c02 <+106>:	cmp    DWORD PTR [ebp-0x4],0xd6
+```gdb
+if (n1 <= 7)                      =>  0x08048bc9 <+49>:	cmp    DWORD PTR [ebp-0xc],0x7
+jump at the adress on the .rodata =>  0x08048bd6 <+62>: jmp    DWORD PTR [eax*4+0x80497e8]
+
+if (c1 == 0x62)                   =>   0x08048c00 <+104>:	mov    bl,0x62
+if (n1 == 0xd6)                   =>   0x08048c02 <+106>:	cmp    DWORD PTR [ebp-0x4],0xd6
 ```
+So we pass it with: **1 b 214**
 
-So with 1 b 214 we pass it.
+## Phase 4
 
-### Phase 4
-
-```bash
+```c
 uint32_t func4 (int32_t arg_8h) {
     int32_t var_18h;
     do {
@@ -313,35 +313,34 @@ label_2:
     return eax;
 }
 ```
+We see: `ret = eax + esi = func(n - 1) + func(n - 2)` and this is the fibonacci function.
 
-ret = eax + esi = func(n - 1) + func(n - 2)
-This is fibonacci function.
+In the phase_4 function we see:
 
-In phase_4 function :
-```bash
+```c
 eax = func4 (eax);
     if (eax != 0x37) {
         explode_bomb ();
     }
 ```
-If func4 doesn't return 0x37 or 55(dec) it explodes. But fibo(10) = 55 actually
-explodes. Let;s take a look at this part in func4:
-```bash
+
+If func4 doesn't return 0x37 or 55(dec) it explodes. But fibonacci(10) = 55 actually explodes. Let's take a look at this part in func4:
+
+```c
 if (ebx <= 1) {
 	goto label_1;
 }
 ```
-The process stopped when ebx = 1, howerver the real fibo stops in many ways (see
-fibo in scripts dir) and not putting the others stop conditions shift by one the list so it is not
-func4(10) = 55 but fibo(9) = 55.
 
-password: 9
+The process stopped when ebx = 1, however the real fibonacci stops in many ways (see fibonacci in the scripts folder) and not putting the others stop conditions shifts by one the list so it is not `func4(10) = 55` but `fibonacci(9) = 55`.
 
-### Phase 5
+The password is: **9**
 
-It encrypt a string of 6 character length and compare it to "giants"
+## Phase 5
 
-The encryption do as follow :
+It encrypts a string of 6 bytes length and compare it to "giants".
+
+The encryption does as follow :
 
 ```bash
 A = 0x41
@@ -355,19 +354,58 @@ abcdefghijklmnopqrstuvwxyz
 srveawhobpnutfgisrveawhobp
 ```
 
+So both of these options allow us to pass the phase 5:
+```
 giants = opekmq
 giants = opekma
+```
 
-### Phase 6
+But the good one is **opekmq**
+
+## Phase 6
 
 We know :
-- we need 6 numbers
-- each between 1 & 6
-- first is 4
-- something about their position matter
+- We need 6 numbers
+- Each between 1 & 6
+- The first is 4
+- Their position matter
 
-A chain list exists to compare our input by checking stack address where our
-input is stored.
+After inspecting the .rodata section, wee see that there is a chained list where all those numbers are stored:
+
+```
+0804b230 <node6>:
+ 804b230:	b0 01 00 00 06 00 00 00 00 00 00 00                 ............
+
+0804b23c <node5>:
+ 804b23c:	d4 00 00 00 05 00 00 00 30 b2 04 08                 ........0...
+
+0804b248 <node4>:
+ 804b248:	e5 03 00 00 04 00 00 00 3c b2 04 08                 ........<...
+
+0804b254 <node3>:
+ 804b254:	2d 01 00 00 03 00 00 00 48 b2 04 08                 -.......H...
+
+0804b260 <node2>:
+ 804b260:	d5 02 00 00 02 00 00 00 54 b2 04 08                 ........T...
+
+0804b26c <node1>:
+ 804b26c:	fd 00 00 00 01 00 00 00 60 b2 04 08                 ........`...
+```
+
+
+After inspecting the stack at the beginning of the comparisons in gdb, we see that the addresses of the chained list nodes at stored in the stack. They are stored in the order the numbers are required to be, and the program compares our input (stored on the stack between 0xbffff610 and 0xbffff624) with the values inside of the respecting nodes.
+
+```
+(gdb) x/23wx $esp
+0xbffff5d0:	0xbffff6f4	0x00000000	0x00000000	0xbffff6f4
+0xbffff5e0:	0x00000000	0x00000000	0xbffff618	0xbffff5f8
+0xbffff5f0:	0x00000010	0x0804b248	0x0804b248	0x0804b260
+0xbffff600:	0x0804b230	0x0804b254	0x0804b26c	0x0804b23c
+0xbffff610:	0x00000004	0x00000002	0x00000006	0x00000003
+0xbffff620:	0x00000001	0x00000005	0xbffff658
+```
+
+So the password is: **4 2 6 3 1 5**
 
 ### Result
 

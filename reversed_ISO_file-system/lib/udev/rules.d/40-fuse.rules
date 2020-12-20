@@ -1,1 +1,0 @@
-KERNEL=="fuse", GROUP="fuse", OPTIONS+="static_node=fuse"
