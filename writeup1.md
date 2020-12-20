@@ -236,33 +236,144 @@ There we see a binary named **bomb**, and a README with some hints. The bomb has
 
 ### Phase 1
 
-lorem ipsum
+```bash
+$> strings bomb
+```
+See "Public speaking is very easy."
 
 ### Phase 2
 
-lorem ipsum
+```bash
+0x08048b63 <+27>:	cmp    DWORD PTR [ebp-0x18],0x1
+```
+
+First number need to be 1.
+
+After this there is a loop for the 5 remaining number.
+
+The math is as following :
+
+```bash
+int	loop = 1;
+int n = 1 (premier nombre)
+do
+{
+	var1 = loop + 1;
+	var2 = var2 * (n + loop * 4 - 4);
+	if (n + loop * 4 != var 2)
+		explode_bomb ();
+	loop++;
+}
+while (loop <= 5);
+```
+
+We can notice that there is a loop reaching consecutively 1, 2, 3, 4, 5, 6.
+And our password is equal to : 1!, 2!, 3!, 4!, 5!.
+
+Our 5 numbers : 1 2 6 24 120 720
 
 ### Phase 3
 
-lorem ipsum
+We know from the hint that the second element is "b".
+
+                   n1 c1 n2
+It ask for this : "%d %c %d"
+
+```bash
+And check for this
+if (n1 <= 7)      =>                    0x08048bc9 <+49>:	cmp    DWORD PTR [ebp-0xc],0x7
+if (c1 == 0x62)   =>					0x08048c00 <+104>:	mov    bl,0x62
+if (n1 == 0xd6)   =>					0x08048c02 <+106>:	cmp    DWORD PTR [ebp-0x4],0xd6
+```
+
+So with 1 b 214 we pass it.
 
 ### Phase 4
 
-lorem ipsum
+```bash
+uint32_t func4 (int32_t arg_8h) {
+    int32_t var_18h;
+    do {
+label_0:
+        ebx = *((ebp + 8));
+        if (ebx <= 1) {
+            goto label_1;
+        }
+        eax = func4 (ebx - 1);
+    } while (1);
+    esi = eax;
+    eax = func4 (ebx - 2);
+    goto label_0;
+    eax += esi;						#<= func4(n - 1) + func4(n - 2)
+    goto label_2;
+label_1:
+    eax = 1;
+label_2:
+    esp = ebp - 0x18;
+    return eax;
+}
+```
+
+ret = eax + esi = func(n - 1) + func(n - 2)
+This is fibonacci function.
+
+In phase_4 function :
+```bash
+eax = func4 (eax);
+    if (eax != 0x37) {
+        explode_bomb ();
+    }
+```
+If func4 doesn't return 0x37 or 55(dec) it explodes. But fibo(10) = 55 actually
+explodes. Let;s take a look at this part in func4:
+```bash
+if (ebx <= 1) {
+	goto label_1;
+}
+```
+The process stopped when ebx = 1, howerver the real fibo stops in many ways (see
+fibo in scripts dir) and not putting the others stop conditions shift by one the list so it is not
+func4(10) = 55 but fibo(9) = 55.
+
+password: 9
 
 ### Phase 5
 
-lorem ipsum
+It encrypt a string of 6 character length and compare it to "giants"
+
+The encryption do as follow :
+
+```bash
+A = 0x41
+0x41 & 0xf = 1
+esi = "isrveawhobpnutfg";
+str[index] = esi[1];
+
+##after the encryption the alphabet representation is as follow :
+abcdefghijklmnopqrstuvwxyz
+-----
+srveawhobpnutfgisrveawhobp
+```
+
+giants = opekmq
+giants = opekma
 
 ### Phase 6
 
-lorem ipsum
+We know :
+- we need 6 numbers
+- each between 1 & 6
+- first is 4
+- something about their position matter
+
+A chain list exists to compare our input by checking stack address where our
+input is stored.
 
 ### Result
 
 Here is a summary of the passwords we found for the 6 stages and the combined one at the end:
 
-```
+```bash
 PHASE 1:    Public speaking is very easy.
 PHASE 2:    1 2 6 24 120 720
 PHASE 3:    1 b 214
